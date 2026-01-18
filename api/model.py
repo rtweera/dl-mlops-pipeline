@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import Tuple
 import logging
 
+# IMPORTANT: Import transformers BEFORE loading the model so joblib can find the classes
+from transformers import TransformCO2, DiscretizeLight, FeatureEngineer
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,6 +64,9 @@ class OccupancyPredictor:
             # Convert input to DataFrame
             # The model expects columns: Temperature, Humidity, Light, CO2, HumidityRatio, datetime
             df = pd.DataFrame([input_data])
+            
+            # Convert datetime string to datetime object
+            df["datetime"] = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S")
             
             # Make prediction
             prediction = self.model.predict(df)[0]
