@@ -22,8 +22,8 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy application code from api folder
+COPY api . 
 
 # Create models directory
 RUN mkdir -p /app/models

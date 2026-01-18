@@ -20,7 +20,7 @@ class OccupancyPredictor:
     Handles model loading and inference.
     """
     
-    def __init__(self, model_path: str = "../models/occupancy_model_pipeline.joblib"):
+    def __init__(self, model_path: str = "./models/occupancy_model_pipeline.joblib"):
         """
         Initialize the predictor with the model path.
         
