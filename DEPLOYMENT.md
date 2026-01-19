@@ -1,46 +1,53 @@
-# Occupancy Prediction Microservice 🏢
+# Occupancy Prediction Microservice
 
 A containerized microservice for predicting room occupancy based on environmental sensor data using machine learning.
 
-## 🏗️ Architecture
+## Architecture
 
 This project implements a microservices architecture with:
+
 - **FastAPI Service**: REST API for occupancy predictions
 - **LightGBM Model**: Trained ML pipeline for inference
 - **Docker**: Containerized deployment
 
 ## 📁 Project Structure
 
-```
+```plaintext
 dl-mlops-pipeline/
 ├── api/
 │   ├── main.py              # FastAPI application
 │   ├── model.py             # Model loading and inference
 │   ├── schemas.py           # Pydantic models
+│   ├── transformers.py      # Custom data transformers
 │   ├── requirements.txt     # Python dependencies
 │   ├── Dockerfile           # API service container
 │   └── .dockerignore
 ├── models/
 │   └── occupancy_model_pipeline.joblib  # Trained model (generated from notebook)
 ├── notebooks/
-│   └── 215565L_ML_project_notebook.ipynb
+│   └── model-training.ipynb
 ├── data/
+│   ├── dataset.txt
+│   ├── dataset2.txt         
+│   └── datatraining.txt
+
+
 └── docker-compose.yml       # Service orchestration
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Trained model file (`occupancy_model_pipeline.joblib`) in the `models/` directory
+- Poetry installed (for running the notebook dependencies)
 
 ### Step 1: Train and Save the Model
 
 Run the Jupyter notebook to train the model and save it:
 
-```bash
-# In your notebook, run the "Model Persistence" cells to save the model to models/
+```plaintext
+In traininig notebook, run up to the "Model Persistence" cells to save the model to models/
 ```
 
 ### Step 2: Build and Run with Docker Compose
@@ -64,9 +71,11 @@ The API will be available at `http://localhost:8000`
 ## 📡 API Endpoints
 
 ### POST /predict
+
 Predict room occupancy based on sensor readings.
 
 **Request Body:**
+
 ```json
 {
   "datetime": "2015-02-04 17:51:00",
@@ -79,6 +88,7 @@ Predict room occupancy based on sensor readings.
 ```
 
 **Response:**
+
 ```json
 {
   "prediction": 1,
@@ -88,9 +98,11 @@ Predict room occupancy based on sensor readings.
 ```
 
 ### GET /health
+
 Check service health status.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -175,33 +187,20 @@ docker-compose down -v
 ## 📊 Model Information
 
 The trained model pipeline includes:
+
 1. **CO2 BoxCox Transformation**: Normalizes CO2 distribution
 2. **Light Discretization**: KBins discretization with 2 bins
-3. **Feature Engineering**: 
+3. **Feature Engineering**:
    - Time-based features (hour, day of week, cyclical encoding)
    - Delta features (lag-1 differences)
    - Rate features (change per minute)
 4. **SMOTE Oversampling**: Handles class imbalance
 5. **LightGBM Classifier**: Final prediction model
 
-## 🔒 Production Considerations
-
-For production deployment, consider:
-- [ ] Add authentication/authorization
-- [ ] Configure CORS for specific origins
-- [ ] Add rate limiting
-- [ ] Implement logging aggregation
-- [ ] Add monitoring (Prometheus/Grafana)
-- [ ] Use environment variables for configuration
-- [ ] Add model versioning
-- [ ] Implement A/B testing capabilities
-- [ ] Add input validation and sanitization
-- [ ] Configure HTTPS/SSL
-
-## 📝 License
+## License
 
 See LICENSE file for details.
 
-## 👥 Author
+## Author
 
-ML OPs Pipeline Project - 215565L
+MLOPS Pipeline Project - Ravindu Weerasinghe
