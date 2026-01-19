@@ -56,9 +56,9 @@ class OccupancyInput(BaseModel):
 class OccupancyPrediction(BaseModel):
     """Output schema for occupancy prediction response."""
     
-    prediction: int = Field(
+    prediction: str = Field(
         ...,
-        description="Predicted occupancy (0: Not occupied, 1: Occupied)"
+        description="Predicted occupancy label (Person present / Person not present)"
     )
     probability: Optional[float] = Field(
         None,
@@ -66,17 +66,18 @@ class OccupancyPrediction(BaseModel):
         ge=0.0,
         le=1.0
     )
-    timestamp: str = Field(
+    handling_time_ms: float = Field(
         ...,
-        description="Server timestamp when prediction was made"
+        description="End-to-end request handling time in milliseconds",
+        ge=0.0
     )
 
     class Config:
         json_schema_extra = {
             "example": {
-                "prediction": 1,
+                "prediction": "Person present",
                 "probability": 0.95,
-                "timestamp": "2026-01-19T12:00:00"
+                "handling_time_ms": 12.4
             }
         }
 

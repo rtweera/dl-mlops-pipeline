@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 import logging
+import time
 from contextlib import asynccontextmanager
 
 from schemas import OccupancyInput, OccupancyPrediction, HealthResponse
@@ -48,7 +49,7 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify actual origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,7 +65,8 @@ async def root():
         "endpoints": {
             "predict": "/predict",
             "health": "/health",
-            "docs": "/docs"
+            "docs": "/docs",
+            "model_info": "/model/info"
         }
     }
 
@@ -104,6 +106,7 @@ async def predict_occupancy(input_data: OccupancyInput):
         Prediction result with occupancy status and confidence
     """
     try:
+        start = time.perf_counter()
         # Get predictor instance
         predictor = get_predictor()
         
@@ -115,13 +118,18 @@ async def predict_occupancy(input_data: OccupancyInput):
         
         # Make prediction
         prediction, probability = predictor.predict(data_dict)
+
+        # Map numeric prediction to human-readable label
+        label = "Person present" if prediction == 1 else "Person not present"
         
-        logger.info(f"Prediction made: {prediction} with probability {probability}")
+        logger.info(f"Prediction made: {label} (raw={prediction}) with probability {probability}")
         
+        handling_time_ms = (time.perf_counter() - start) * 1000.0
+
         return OccupancyPrediction(
-            prediction=prediction,
+            prediction=label,
             probability=probability,
-            timestamp=datetime.now().isoformat()
+            handling_time_ms=handling_time_ms
         )
         
     except ValueError as e:

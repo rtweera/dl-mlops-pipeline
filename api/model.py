@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Tuple
 import logging
 
-# IMPORTANT: Import transformers BEFORE loading the model so joblib can find the classes
+# Import transformers BEFORE loading the model so joblib can find the classes; else class not found error
 from transformers import TransformCO2, DiscretizeLight, FeatureEngineer
 
 logger = logging.getLogger(__name__)
@@ -111,7 +111,7 @@ predictor = None
 def get_predictor() -> OccupancyPredictor:
     """
     Get or create the global predictor instance.
-    This ensures we only load the model once.
+    This ensures we only load the model once. Singleton pattern.
     """
     global predictor
     if predictor is None:
